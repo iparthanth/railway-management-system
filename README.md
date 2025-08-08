@@ -1,61 +1,72 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Bangladesh Railway - Simple Student Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a simplified version of a railway management system created as a student project. The original complex system has been stripped down to focus on learning fundamentals.
 
-## About Laravel
+## What was removed/simplified:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Backend & Database
+- ❌ Removed all PHP/Laravel backend code
+- ❌ Removed database migrations and models
+- ❌ Removed complex authentication system
+- ❌ Removed payment integration
+- ❌ Removed booking system backend
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Frontend Complexity
+- ❌ Removed Bootstrap framework
+- ❌ Removed complex "How it Works" section with detailed instructions
+- ❌ Simplified train information display
+- ❌ Removed advanced features and animations
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## What remains:
 
-## Learning Laravel
+### ✅ Simple Frontend
+- Clean HTML structure
+- Tailwind CSS for styling (CDN)
+- Basic responsive design
+- Simple navigation
+- Train search form (frontend only)
+- Train information display
+- Mobile-friendly design
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### ✅ Core Features (Demo Only)
+- Train search interface
+- Train information page
+- Simple form validation
+- Mobile menu
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Files Structure:
+```
+railway-management-system/
+├── index.html              # Main homepage
+├── train-information.html  # Train info page
+└── README.md               # This file
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## How to Run:
+1. Open `index.html` in any web browser
+2. Or serve it through a web server (XAMPP, etc.)
 
-## Laravel Sponsors
+## Technologies Used:
+- HTML5
+- Tailwind CSS (via CDN)
+- Vanilla JavaScript
+- Font Awesome icons
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Note:
+This is a purely frontend demonstration project. No actual booking functionality exists. This version is designed to help students learn:
+- Clean HTML structure
+- CSS frameworks (Tailwind)
+- Basic JavaScript
+- Responsive design principles
 
-### Premium Partners
+Perfect for academic submissions that require simplicity and learning progression rather than complex copied systems.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Learning Objectives Achieved:
+- Understanding of semantic HTML
+- CSS framework usage
+- Basic JavaScript event handling
+- Responsive web design
+- Clean, maintainable code structure
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Simple student project - December 2024*
