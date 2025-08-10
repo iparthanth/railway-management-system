@@ -10,7 +10,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -21,7 +20,6 @@
             color: white;
             position: relative;
         }
-        
         /* Dark overlay for better text readability */
         body::before {
             content: '';
@@ -33,43 +31,30 @@
             background: rgba(0, 0, 0, 0.4);
             z-index: -1;
         }
-        
         .navbar {
             background-color: #ffffff;
-            padding: 5px 20px;
+            padding: 1px 20px;
             display: flex;
             align-items: center;
             border-bottom: 1px solid #ddd;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             justify-content: space-between;
         }
-        
         .navbar-brand {
             color: #28a745;
             font-size: 18px;
             font-weight: bold;
             text-decoration: none;
         }
-        
-        .navbar-nav {
-            display: flex;
-            gap: 15px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
         .navbar-nav a {
             color: black;
             text-decoration: none;
             font-weight: 500;
             font-size: 14px;
         }
-        
         .navbar-nav a:hover {
             color: #28a745;
         }
-        
         .user-info {
             color: black;
             font-size: 14px;
@@ -77,7 +62,6 @@
             align-items: center;
             gap: 10px;
         }
-        
         .logout-btn {
             background-color: #dc3545;
             color: white;
@@ -87,7 +71,6 @@
             cursor: pointer;
             margin-left: 10px;
         }
-        
         .container {
             max-width: 450px;
             margin: 30px auto;
@@ -97,30 +80,25 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             color: #333;
         }
-        
         h1, h2 {
             text-align: center;
             color: #28a745;
         }
-        
         h1 {
             font-size: 36px;
             margin-bottom: 5px;
         }
-        
         h2 {
             font-size: 24px;
             margin-bottom: 20px;
             color: #333;
         }
-        
         label {
             display: block;
             margin-top: 15px;
             font-weight: bold;
             color: #333;
         }
-        
         select, input[type="date"] {
             width: 100%;
             padding: 10px;
@@ -129,7 +107,6 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        
         input[type="submit"] {
             display: block;
             width: 100%;
@@ -143,25 +120,9 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
         input[type="submit"]:hover {
             background-color: #218838;
         }
-        
-        .footer-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-        
-        .footer-link a {
-            color: #28a745;
-            text-decoration: none;
-        }
-        
-        .footer-link a:hover {
-            text-decoration: underline;
-        }
-        
         .welcome-text {
             text-align: center;
             font-size: 36px;
@@ -174,6 +135,7 @@
         .welcome-text .highlight {
             color: #ffd700;
         }
+
     </style>
 </head>
 <body>
@@ -183,7 +145,6 @@
         <a href="#" class="navbar-brand">Railway Management System</a>
         <div class="navbar-nav">
             <a href="#">Home</a>
-            <a href="{{ route('contact') }}">Contact</a>
         </div>
         <div class="user-info">
             <span>Welcome, {{ auth()->user()->name }}</span>
@@ -245,33 +206,10 @@
             <input type="submit" value="Search Trains">
         </form>
         
-        <div class="footer-link">
-            <a href="{{ route('contact') }}">Contact Us</a>
-        </div>
+        
     </div>
 
-    <script>
-        document.getElementById('journeyDate').value = new Date().toISOString().split('T')[0];
-
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            const fromStation = document.getElementById('fromStation').value;
-            const toStation = document.getElementById('toStation').value;
-            
-            if (!fromStation || !toStation) {
-                e.preventDefault();
-                alert('Please select both departure and destination stations.');
-                return false;
-            }
-            
-            if (fromStation === toStation) {
-                e.preventDefault();
-                alert('From and To stations cannot be the same.');
-                return false;
-            }
-            
-            // Form will submit normally if validation passes
-        });
-    </script>
+    
 
 </body>
 </html>
