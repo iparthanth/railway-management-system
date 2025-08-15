@@ -1,48 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 
-// Authentication routes (login only)
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Create demo user route (for testing)
-Route::get('/create-demo-user', [AuthController::class, 'createDemoUser']);
-
-// Home routes (both root and /home should work)
+// Home page
 Route::get('/', function () {
-    if (!auth()->check()) {
-        return redirect()->route('login');
-    }
     return view('home');
 })->name('home');
 
-Route::get('/home', function () {
-    if (!auth()->check()) {
-        return redirect()->route('login');
-    }
-    return view('home');
+// Train Routes
+Route::get('/trains', [App\Http\Controllers\TrainController::class, 'index'])->name('trains.index');
+Route::post('/trains/search', [App\Http\Controllers\TrainController::class, 'search'])->name('trains.search');
+Route::get('/trains/{id}/seats', [App\Http\Controllers\TrainController::class, 'seats'])->name('trains.seats');
+
+// Payment Routes
+Route::prefix('payment')->name('payment.')->group(function () {
+    Route::get('/create/{booking}', [App\Http\Controllers\PaymentController::class, 'create'])->name('create');
+    Route::post('/stripe/intent/{booking}', [App\Http\Controllers\PaymentController::class, 'createStripeIntent'])->name('stripe.intent');
+    Route::post('/stripe/confirm', [App\Http\Controllers\PaymentController::class, 'confirmStripePayment'])->name('stripe.confirm');
+    Route::get('/currencies', [App\Http\Controllers\PaymentController::class, 'getSupportedCurrencies'])->name('currencies');
+    Route::get('/status/{payment}', [App\Http\Controllers\PaymentController::class, 'getPaymentStatus'])->name('status');
+    Route::post('/webhook/stripe', [App\Http\Controllers\PaymentController::class, 'stripeWebhook'])->name('webhook.stripe');
 });
 
-// Protected routes (require authentication)
-Route::middleware('auth')->group(function () {
-    
-    // Simple search route - just shows static results
-    Route::post('/search-trains', function() {
-        return view('search-results');
-    })->name('search.trains');
-    
-    // Simple booking page
-    Route::get('/booking', function() {
-        return view('booking.create');
-    })->name('booking.create');
-    
-    
-    // Contact page
-    Route::get('/contact', function () {
-        return view('contact');
-    })->name('contact');
-    
-});

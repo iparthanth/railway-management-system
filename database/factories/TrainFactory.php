@@ -17,27 +17,24 @@ class TrainFactory extends Factory
     public function definition(): array
     {
         $trainNames = [
-            'Suborno Express', 'Turna Nishitha', 'Chittagong Express', 'Parabat Express',
-            'Rangpur Express', 'Silk City Express', 'Kalni Express', 'Mohanagar Godhuli',
-            'Sundarban Express', 'Padma Express', 'Jamuna Express', 'Meghna Express'
+            'Express', 'Mail', 'Intercity', 'Local', 'Special'
         ];
-
+        
+        $cities = [
+            'Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barisal', 'Tangail'
+        ];
+        
+        $departureTime = fake()->time('H:i');
+        $arrivalTime = fake()->time('H:i');
+        
         return [
-            'train_number' => $this->faker->unique()->numberBetween(100, 999),
-            'name' => $this->faker->randomElement($trainNames),
-            'type' => $this->faker->randomElement(['EXPRESS', 'INTERCITY', 'LOCAL', 'MAIL']),
-            'total_seats' => $this->faker->numberBetween(200, 800),
-            'is_active' => $this->faker->boolean(90),
+            'name' => fake()->randomElement($cities) . ' ' . fake()->randomElement($trainNames),
+            'train_number' => 'TR-' . fake()->unique()->numberBetween(100, 999),
+            'departure_time' => $departureTime,
+            'arrival_time' => $arrivalTime,
+            'duration' => fake()->randomElement(['2h 30m', '4h 00m', '6h 30m', '8h 00m', '8h 30m']),
+            'total_seats' => 16,
+            'is_active' => fake()->boolean(90), // 90% active
         ];
-    }
-
-    /**
-     * Indicate that the train is inactive.
-     */
-    public function inactive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-        ]);
     }
 }

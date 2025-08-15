@@ -16,35 +16,12 @@ class StationFactory extends Factory
      */
     public function definition(): array
     {
-        $bangladeshStations = [
-            ['code' => 'DHK', 'name' => 'Dhaka', 'city' => 'Dhaka', 'lat' => 23.8103, 'lng' => 90.4125],
-            ['code' => 'CTG', 'name' => 'Chittagong', 'city' => 'Chittagong', 'lat' => 22.3569, 'lng' => 91.7832],
-            ['code' => 'SYL', 'name' => 'Sylhet', 'city' => 'Sylhet', 'lat' => 24.8949, 'lng' => 91.8687],
-            ['code' => 'RAJ', 'name' => 'Rajshahi', 'city' => 'Rajshahi', 'lat' => 24.3745, 'lng' => 88.6042],
-            ['code' => 'KHL', 'name' => 'Khulna', 'city' => 'Khulna', 'lat' => 22.8456, 'lng' => 89.5403],
-            ['code' => 'BSL', 'name' => 'Barisal', 'city' => 'Barisal', 'lat' => 22.7010, 'lng' => 90.3535],
-        ];
-
-        $station = $this->faker->randomElement($bangladeshStations);
-
+        $cities = ['Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barisal', 'Tangail', 'Comilla', 'Mymensingh', 'Rangpur'];
+        
         return [
-            'code' => $station['code'],
-            'name' => $station['name'] . ' Railway Station',
-            'city' => $station['city'],
-            'state' => 'Bangladesh',
-            'latitude' => $station['lat'],
-            'longitude' => $station['lng'],
-            'is_active' => $this->faker->boolean(95),
+            'name' => fake()->unique()->randomElement($cities),
+            'code' => fake()->unique()->regexify('[A-Z]{3}'),
+            'is_active' => fake()->boolean(90),
         ];
-    }
-
-    /**
-     * Indicate that the station is inactive.
-     */
-    public function inactive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-        ]);
     }
 }

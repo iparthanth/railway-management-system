@@ -2,36 +2,48 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Station extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'code',
         'name',
-        'city',
-        'state',
-        'latitude',
-        'longitude',
+        'code',
         'is_active',
     ];
 
     protected $casts = [
-        'latitude' => 'decimal:6',
-        'longitude' => 'decimal:6',
         'is_active' => 'boolean',
     ];
 
-    public function departureRoutes()
+    // Relationships
+    public function fromRoutes()
     {
-        return $this->hasMany(Route::class, 'departure_station_id');
+        return $this->hasMany(Route::class, 'from_station_id');
     }
 
-    public function arrivalRoutes()
+    public function toRoutes()
     {
-        return $this->hasMany(Route::class, 'arrival_station_id');
+        return $this->hasMany(Route::class, 'to_station_id');
+    }
+
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    // Helper methods
+    public static function getActiveStations()
+    {
+        return static::active()->orderBy('name')->pluck('name', 'id');
+    }
+
+    public static function getStationNames()
+    {
+        return static::active()->orderBy('name')->pluck('name')->toArray();
     }
 }

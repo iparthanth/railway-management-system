@@ -33,44 +33,33 @@
         }
         .navbar {
             background-color: #ffffff;
-            padding: 1px 20px;
+            padding: 15px 40px;
             display: flex;
             align-items: center;
             border-bottom: 1px solid #ddd;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             justify-content: space-between;
+            min-height: 70px;
         }
         .navbar-brand {
             color: #28a745;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             text-decoration: none;
+        }
+        .navbar-nav {
+            display: flex;
+            gap: 30px;
         }
         .navbar-nav a {
             color: black;
             text-decoration: none;
             font-weight: 500;
-            font-size: 14px;
-        }
-        .navbar-nav a:hover {
-            color: #28a745;
-        }
-        .user-info {
-            color: black;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logout-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
+            font-size: 16px;
+            padding: 8px 15px;
             border-radius: 4px;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-left: 10px;
         }
+
         .container {
             max-width: 450px;
             margin: 30px auto;
@@ -120,9 +109,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        input[type="submit"]:hover {
-            background-color: #218838;
-        }
+
         .welcome-text {
             text-align: center;
             font-size: 36px;
@@ -131,27 +118,41 @@
             margin: 20px 0;
             line-height: 1.2;
         }
-        
+
         .welcome-text .highlight {
             color: #ffd700;
         }
 
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            .navbar-nav {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .container {
+                margin: 20px;
+                max-width: none;
+            }
+            .welcome-text {
+                font-size: 28px;
+                margin: 15px 0;
+            }
+        }
     </style>
 </head>
 <body>
 
     <!-- Navigation Bar -->
     <div class="navbar">
-        <a href="#" class="navbar-brand">Railway Management System</a>
+        <a href="{{ route('home') }}" class="navbar-brand">Railway Management System</a>
         <div class="navbar-nav">
-            <a href="#">Home</a>
-        </div>
-        <div class="user-info">
-            <span>Welcome, {{ auth()->user()->name }}</span>
-            <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-                @csrf
-                <input type="submit" value="Logout" class="logout-btn">
-            </form>
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('trains.index') }}">All Trains</a>
         </div>
     </div>
 
@@ -165,51 +166,66 @@
     <div class="container">
         <h2>Search for Trains</h2>
 
-        <form id="searchForm" action="{{ route('search.trains') }}" method="POST">
+        <form id="searchForm" action="{{ route('trains.search') }}" method="POST">
             @csrf
             <label for="fromStation">From:</label>
             <select id="fromStation" name="from_station" required>
                 <option value="">Select departure</option>
-                <option value="dhaka">Dhaka</option>
-                <option value="chittagong">Chittagong</option>
-                <option value="sylhet">Sylhet</option>
-                <option value="rajshahi">Rajshahi</option>
-                <option value="khulna">Khulna</option>
-                <option value="barisal">Barisal</option>
+                <option value="Dhaka">Dhaka</option>
+                <option value="Chittagong">Chittagong</option>
+                <option value="Sylhet">Sylhet</option>
+                <option value="Rajshahi">Rajshahi</option>
+                <option value="Khulna">Khulna</option>
+                <option value="Barisal">Barisal</option>
+                <option value="Tangail">Tangail</option>
             </select>
 
             <label for="toStation">To:</label>
             <select id="toStation" name="to_station" required>
                 <option value="">Select destination</option>
-                <option value="dhaka">Dhaka</option>
-                <option value="chittagong">Chittagong</option>
-                <option value="sylhet">Sylhet</option>
-                <option value="rajshahi">Rajshahi</option>
-                <option value="khulna">Khulna</option>
-                <option value="barisal">Barisal</option>
+                <option value="Dhaka">Dhaka</option>
+                <option value="Chittagong">Chittagong</option>
+                <option value="Sylhet">Sylhet</option>
+                <option value="Rajshahi">Rajshahi</option>
+                <option value="Khulna">Khulna</option>
+                <option value="Barisal">Barisal</option>
+                <option value="Tangail">Tangail</option>
             </select>
 
             <label for="journeyDate">Journey Date:</label>
-            <input type="date" id="journeyDate" name="travel_date" required>
+            <input type="date" id="journeyDate" name="journey_date" required min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}">
 
-            <label for="trainClass">Class:</label>
-            <select id="trainClass" name="class">
-                <option value="">All Classes</option>
-                <option value="AC_B">AC Berth</option>
-                <option value="AC_S">AC Seat</option>
-                <option value="SNIGDHA">Snigdha</option>
-                <option value="F_BERTH">First Berth</option>
-                <option value="F_SEAT">First Seat</option>
-                <option value="S_CHAIR">Shovan Chair</option>
+            <label for="passengers">Number of Passengers:</label>
+            <select id="passengers" name="passengers" required>
+                <option value="1">1 Passenger</option>
+                <option value="2">2 Passengers</option>
+                <option value="3">3 Passengers</option>
+                <option value="4">4 Passengers (Maximum)</option>
             </select>
 
             <input type="submit" value="Search Trains">
         </form>
-        
-        
     </div>
 
-    
+    <script>
+        // Form validation
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            const fromStation = document.getElementById('fromStation').value;
+            const toStation = document.getElementById('toStation').value;
+
+            if (fromStation === toStation) {
+                e.preventDefault();
+                alert('Please select different departure and destination stations.');
+                return false;
+            }
+
+            if (!fromStation || !toStation) {
+                e.preventDefault();
+                alert('Please select both departure and destination stations.');
+                return false;
+            }
+        });
+    </script>
 
 </body>
 </html>

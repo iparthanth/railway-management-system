@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Train;
-use App\Models\Station;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Station;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Route>
@@ -18,29 +17,12 @@ class RouteFactory extends Factory
      */
     public function definition(): array
     {
-        $departureTime = $this->faker->time('H:i');
-        $duration = $this->faker->numberBetween(180, 720); // 3 to 12 hours in minutes
-        $arrivalTime = date('H:i', strtotime($departureTime) + ($duration * 60));
-
         return [
-            'train_id' => Train::factory(),
-            'departure_station_id' => Station::factory(),
-            'arrival_station_id' => Station::factory(),
-            'departure_time' => $departureTime,
-            'arrival_time' => $arrivalTime,
-            'distance_km' => $this->faker->numberBetween(50, 500),
-            'duration_minutes' => $duration,
-            'is_active' => $this->faker->boolean(90),
+            'from_station_id' => Station::factory(),
+            'to_station_id' => Station::factory(),
+            'distance_km' => fake()->numberBetween(50, 400),
+            'base_fare' => fake()->numberBetween(300, 1500),
+            'is_active' => fake()->boolean(95), // 95% active
         ];
-    }
-
-    /**
-     * Indicate that the route is inactive.
-     */
-    public function inactive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-        ]);
     }
 }
