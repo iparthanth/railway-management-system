@@ -7,20 +7,18 @@ use Illuminate\Support\Facades\Schema;
 class CreateStationsTable extends Migration
 {
     public function up(): void
-    {
-        Schema::create('stations', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('code', 10)->unique();
-            $table->string('city');
-            $table->string('state')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-    }
+ {
+ Schema::create('stations', function (Blueprint $table) {
+ $table->id();
+ $table->string('name');
 
-    public function down(): void
+ $table->string('state');
+ $table->timestamps();
+ });
+ }
+
+    public function down()
     {
         Schema::dropIfExists('stations');
     }
-};
+}
