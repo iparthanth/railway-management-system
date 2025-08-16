@@ -2,29 +2,23 @@
 
 namespace Database\Factories;
 
+use App\Models\Coach;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Train;
-use App\Models\Seat;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Seat>
- */
 class SeatFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $seatNumbers = Seat::generateSeatLayout();
+        $positions = ['window', 'middle', 'aisle'];
+        $position = $this->faker->randomElement($positions);
         
         return [
-            'train_id' => Train::factory(),
-            'seat_number' => fake()->randomElement($seatNumbers),
-            'journey_date' => fake()->dateTimeBetween('now', '+30 days')->format('Y-m-d'),
-            'status' => fake()->randomElement(['available', 'booked']),
+            'coach_id' => Coach::factory(),
+            'seat_number' => $this->faker->bothify('?#'),
+            'row_number' => $this->faker->numberBetween(1, 20),
+            'position' => $position,
+            'is_window' => $position === 'window',
+            'is_available' => $this->faker->boolean(80),
         ];
     }
 }

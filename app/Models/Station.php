@@ -12,38 +12,28 @@ class Station extends Model
     protected $fillable = [
         'name',
         'code',
-        'is_active',
+        'city',
+        'state',
+        'is_active'
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active' => 'boolean'
     ];
 
-    // Relationships
-    public function fromRoutes()
+    public function departureRoutes()
     {
         return $this->hasMany(Route::class, 'from_station_id');
     }
 
-    public function toRoutes()
+    public function arrivalRoutes()
     {
         return $this->hasMany(Route::class, 'to_station_id');
     }
 
-    // Scopes
-    public function scopeActive($query)
+    public function trains()
     {
-        return $query->where('is_active', true);
-    }
-
-    // Helper methods
-    public static function getActiveStations()
-    {
-        return static::active()->orderBy('name')->pluck('name', 'id');
-    }
-
-    public static function getStationNames()
-    {
-        return static::active()->orderBy('name')->pluck('name')->toArray();
+        return $this->belongsToMany(Train::class, 'routes', 'from_station_id', 'train_id')
+                    ->orWhere('routes.to_station_id', $this->id);
     }
 }

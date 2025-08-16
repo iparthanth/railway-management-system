@@ -10,76 +10,31 @@ class Seat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'train_id',
+        'coach_id',
         'seat_number',
-        'journey_date',
-        'status',
+        'row_number',
+        'position',
+        'is_window',
+        'is_available'
     ];
 
     protected $casts = [
-        'journey_date' => 'date',
+        'is_window' => 'boolean',
+        'is_available' => 'boolean'
     ];
 
-    // Relationships
-    public function train()
+    public function coach()
     {
-        return $this->belongsTo(Train::class);
+        return $this->belongsTo(Coach::class);
     }
 
-    // Scopes
-    public function scopeAvailable($query)
+    public function bookingSeats()
     {
-        return $query->where('status', 'available');
+        return $this->hasMany(BookingSeat::class);
     }
 
-    public function scopeBooked($query)
+    public function bookings()
     {
-        return $query->where('status', 'booked');
-    }
-
-    public function scopeForDate($query, $date)
-    {
-        return $query->where('journey_date', $date);
-    }
-
-    public function scopeForTrain($query, $trainId)
-    {
-        return $query->where('train_id', $trainId);
-    }
-
-    // Helper methods
-    public function isAvailable()
-    {
-        return $this->status === 'available';
-    }
-
-    public function isBooked()
-    {
-        return $this->status === 'booked';
-    }
-
-    public function book()
-    {
-        $this->update(['status' => 'booked']);
-    }
-
-    public function release()
-    {
-        $this->update(['status' => 'available']);
-    }
-
-    // Generate standard seat layout (A1-A4, B1-B4, C1-C4, D1-D4)
-    public static function generateSeatLayout()
-    {
-        $seats = [];
-        $rows = ['A', 'B', 'C', 'D'];
-        
-        foreach ($rows as $row) {
-            for ($col = 1; $col <= 4; $col++) {
-                $seats[] = $row . $col;
-            }
-        }
-        
-        return $seats;
+        return $this->belongsToMany(Booking::class, 'booking_seats');
     }
 }

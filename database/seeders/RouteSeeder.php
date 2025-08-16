@@ -2,89 +2,53 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Route;
-use App\Models\Station;
+use Illuminate\Support\Facades\DB;
 
 class RouteSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Get stations by name for easier reference
-        $stations = Station::pluck('id', 'name')->toArray();
-
-        $routes = [
+        DB::table('routes')->insert([
             [
-                'from_station_id' => $stations['Dhaka'],
-                'to_station_id' => $stations['Chittagong'],
+                'train_id' => 1,
+                'from_station_id' => 1,
+                'to_station_id' => 2,
+                'departure_time' => '07:30:00',
+                'arrival_time' => '13:00:00',
                 'distance_km' => 264,
-                'base_fare' => 1200.00,
+                'duration_minutes' => 330,
+                'base_price' => 500,
                 'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'from_station_id' => $stations['Chittagong'],
-                'to_station_id' => $stations['Dhaka'],
-                'distance_km' => 264,
-                'base_fare' => 1200.00,
+                'train_id' => 2,
+                'from_station_id' => 1,
+                'to_station_id' => 3,
+                'departure_time' => '08:00:00',
+                'arrival_time' => '12:15:00',
+                'distance_km' => 198,
+                'duration_minutes' => 255,
+                'base_price' => 400,
                 'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'from_station_id' => $stations['Dhaka'],
-                'to_station_id' => $stations['Sylhet'],
-                'distance_km' => 245,
-                'base_fare' => 1000.00,
-                'is_active' => true,
-            ],
-            [
-                'from_station_id' => $stations['Sylhet'],
-                'to_station_id' => $stations['Dhaka'],
-                'distance_km' => 245,
-                'base_fare' => 1000.00,
-                'is_active' => true,
-            ],
-            [
-                'from_station_id' => $stations['Dhaka'],
-                'to_station_id' => $stations['Rajshahi'],
+                'train_id' => 3,
+                'from_station_id' => 1,
+                'to_station_id' => 4,
+                'departure_time' => '09:00:00',
+                'arrival_time' => '14:00:00',
                 'distance_km' => 256,
-                'base_fare' => 950.00,
+                'duration_minutes' => 300,
+                'base_price' => 450,
                 'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
-            [
-                'from_station_id' => $stations['Rajshahi'],
-                'to_station_id' => $stations['Dhaka'],
-                'distance_km' => 256,
-                'base_fare' => 950.00,
-                'is_active' => true,
-            ],
-            [
-                'from_station_id' => $stations['Dhaka'],
-                'to_station_id' => $stations['Khulna'],
-                'distance_km' => 228,
-                'base_fare' => 900.00,
-                'is_active' => true,
-            ],
-            [
-                'from_station_id' => $stations['Dhaka'],
-                'to_station_id' => $stations['Barisal'],
-                'distance_km' => 240,
-                'base_fare' => 920.00,
-                'is_active' => true,
-            ],
-            [
-                'from_station_id' => $stations['Dhaka'],
-                'to_station_id' => $stations['Tangail'],
-                'distance_km' => 98,
-                'base_fare' => 400.00,
-                'is_active' => true,
-            ],
-        ];
-
-        foreach ($routes as $route) {
-            Route::create($route);
-        }
+        ]);
     }
 }

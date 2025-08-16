@@ -11,11 +11,9 @@ return new class extends Migration
         Schema::create('trains', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('train_number')->unique();
-            $table->time('departure_time');
-            $table->time('arrival_time');
-            $table->string('duration');
-            $table->integer('total_seats')->default(16);
+            $table->string('number')->unique();
+            $table->enum('type', ['express', 'local', 'intercity', 'mail']);
+            $table->integer('total_coaches');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

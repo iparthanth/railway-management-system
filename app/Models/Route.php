@@ -10,19 +10,29 @@ class Route extends Model
     use HasFactory;
 
     protected $fillable = [
+        'train_id',
         'from_station_id',
         'to_station_id',
+        'departure_time',
+        'arrival_time',
+        'duration_minutes',
         'distance_km',
-        'base_fare',
-        'is_active',
+        'base_price',
+        'is_active'
     ];
 
     protected $casts = [
-        'base_fare' => 'decimal:2',
+        'departure_time' => 'datetime:H:i',
+        'arrival_time' => 'datetime:H:i',
         'is_active' => 'boolean',
+        'base_price' => 'decimal:2'
     ];
 
-    // Relationships
+    public function train()
+    {
+        return $this->belongsTo(Train::class);
+    }
+
     public function fromStation()
     {
         return $this->belongsTo(Station::class, 'from_station_id');
@@ -33,44 +43,8 @@ class Route extends Model
         return $this->belongsTo(Station::class, 'to_station_id');
     }
 
-    public function trains()
-    {
-        return $this->belongsToMany(Train::class, 'train_routes');
-    }
-
     public function bookings()
     {
         return $this->hasMany(Booking::class);
-    }
-
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeByStations($query, $fromStationName, $toStationName)
-    {
-        return $query->whereHas('fromStation', function($q) use ($fromStationName) {
-            $q->where('name', $fromStationName);
-        })->whereHas('toStation', function($q) use ($toStationName) {
-            $q->where('name', $toStationName);
-        });
-    }
-
-    // Helper methods
-    public function getRouteNameAttribute()
-    {
-        return $this->fromStation->name . ' → ' . $this->toStation->name;
-    }
-
-    public function getDistanceTextAttribute()
-    {
-        return $this->distance_km . ' km';
-    }
-
-    public static function findByStations($fromStation, $toStation)
-    {
-        return static::byStations($fromStation, $toStation)->first();
     }
 }

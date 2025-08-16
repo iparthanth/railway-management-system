@@ -2,39 +2,28 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Train;
 use App\Models\Route;
-use App\Models\User;
+use App\Models\Coach;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Booking>
- */
 class BookingFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $selectedSeats = fake()->randomElements(['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'], fake()->numberBetween(1, 4));
-        
         return [
-            'pnr' => 'PNR' . fake()->unique()->numberBetween(1000000, 9999999),
-            'passenger_name' => fake()->name(),
-            'passenger_email' => fake()->email(),
-            'passenger_phone' => fake()->phoneNumber(),
+            'booking_reference' => strtoupper($this->faker->bothify('??####')),
             'train_id' => Train::factory(),
             'route_id' => Route::factory(),
-            'journey_date' => fake()->dateTimeBetween('now', '+30 days'),
-            'selected_seats' => $selectedSeats,
-            'total_fare' => fake()->numberBetween(500, 2000),
-            'payment_method' => fake()->randomElement(['stripe', 'cash']),
-            'payment_status' => fake()->randomElement(['pending', 'succeeded', 'failed']),
-            'booking_status' => fake()->randomElement(['confirmed', 'cancelled']),
-            'user_id' => fake()->boolean(70) ? User::factory() : null, // 70% have user accounts
+            'coach_id' => Coach::factory(),
+            'journey_date' => $this->faker->dateTimeBetween('now', '+30 days'),
+            'passenger_name' => $this->faker->name(),
+            'passenger_email' => $this->faker->email(),
+            'passenger_phone' => $this->faker->phoneNumber(),
+            'passenger_count' => $this->faker->numberBetween(1, 4),
+            'total_amount' => $this->faker->numberBetween(500, 5000),
+            'booking_status' => $this->faker->randomElement(['pending', 'confirmed', 'cancelled']),
+            'payment_status' => $this->faker->randomElement(['pending', 'paid', 'failed']),
         ];
     }
 }

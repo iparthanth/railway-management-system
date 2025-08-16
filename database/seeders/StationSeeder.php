@@ -2,25 +2,21 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Station;
+use Illuminate\Database\Seeder;
 
 class StationSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $stations = [
-            ['name' => 'Dhaka', 'code' => 'DKA'],
-            ['name' => 'Chittagong', 'code' => 'CTG'],
-            ['name' => 'Sylhet', 'code' => 'SYL'],
-            ['name' => 'Rajshahi', 'code' => 'RAJ'],
-            ['name' => 'Khulna', 'code' => 'KHL'],
-            ['name' => 'Barisal', 'code' => 'BAR'],
-            ['name' => 'Tangail', 'code' => 'TAN'],
+            ['name' => 'Dhaka', 'code' => 'DHK', 'city' => 'Dhaka', 'state' => 'Bangladesh'],
+            ['name' => 'Chittagong', 'code' => 'CTG', 'city' => 'Chittagong', 'state' => 'Bangladesh'],
+            ['name' => 'Sylhet', 'code' => 'SYL', 'city' => 'Sylhet', 'state' => 'Bangladesh'],
+            ['name' => 'Rajshahi', 'code' => 'RAJ', 'city' => 'Rajshahi', 'state' => 'Bangladesh'],
+            ['name' => 'Khulna', 'code' => 'KHL', 'city' => 'Khulna', 'state' => 'Bangladesh'],
+            ['name' => 'Barisal', 'code' => 'BAR', 'city' => 'Barisal', 'state' => 'Bangladesh'],
+            ['name' => 'Tangail', 'code' => 'TAN', 'city' => 'Tangail', 'state' => 'Bangladesh'],
         ];
 
         foreach ($stations as $station) {

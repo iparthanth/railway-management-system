@@ -10,14 +10,16 @@ return new class extends Migration
     {
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('train_id')->constrained()->onDelete('cascade');
             $table->foreignId('from_station_id')->constrained('stations')->onDelete('cascade');
             $table->foreignId('to_station_id')->constrained('stations')->onDelete('cascade');
-            $table->integer('distance_km');
-            $table->decimal('base_fare', 8, 2);
+            $table->time('departure_time');
+            $table->time('arrival_time');
+            $table->integer('duration_minutes');
+            $table->decimal('distance_km', 8, 2);
+            $table->decimal('base_price', 10, 2);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
-            $table->unique(['from_station_id', 'to_station_id']);
         });
     }
 

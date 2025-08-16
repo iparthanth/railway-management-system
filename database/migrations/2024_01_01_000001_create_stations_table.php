@@ -10,8 +10,10 @@ return new class extends Migration
     {
         Schema::create('stations', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('code', 10)->unique();
+            $table->string('city');
+            $table->string('state')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

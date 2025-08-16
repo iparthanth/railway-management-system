@@ -2,27 +2,28 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Station;
+use App\Models\Train;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Route>
- */
 class RouteFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $departureTime = $this->faker->time('H:i');
+        $arrivalTime = $this->faker->time('H:i');
+        $durationMinutes = $this->faker->numberBetween(120, 720);
+        
         return [
+            'train_id' => Train::factory(),
             'from_station_id' => Station::factory(),
             'to_station_id' => Station::factory(),
-            'distance_km' => fake()->numberBetween(50, 400),
-            'base_fare' => fake()->numberBetween(300, 1500),
-            'is_active' => fake()->boolean(95), // 95% active
+            'departure_time' => $departureTime,
+            'arrival_time' => $arrivalTime,
+            'duration_minutes' => $durationMinutes,
+            'distance_km' => $this->faker->numberBetween(50, 500),
+            'base_price' => $this->faker->numberBetween(200, 2000),
+            'is_active' => true,
         ];
     }
 }

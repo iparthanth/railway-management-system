@@ -4,24 +4,28 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Station>
- */
 class StationFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $cities = ['Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barisal', 'Tangail', 'Comilla', 'Mymensingh', 'Rangpur'];
-        
+        $stations = [
+            ['name' => 'Dhaka', 'code' => 'DHK', 'city' => 'Dhaka'],
+            ['name' => 'Chittagong', 'code' => 'CTG', 'city' => 'Chittagong'],
+            ['name' => 'Sylhet', 'code' => 'SYL', 'city' => 'Sylhet'],
+            ['name' => 'Rajshahi', 'code' => 'RAJ', 'city' => 'Rajshahi'],
+            ['name' => 'Khulna', 'code' => 'KHL', 'city' => 'Khulna'],
+            ['name' => 'Barisal', 'code' => 'BAR', 'city' => 'Barisal'],
+            ['name' => 'Tangail', 'code' => 'TAN', 'city' => 'Tangail'],
+        ];
+
+        $station = $this->faker->randomElement($stations);
+
         return [
-            'name' => fake()->unique()->randomElement($cities),
-            'code' => fake()->unique()->regexify('[A-Z]{3}'),
-            'is_active' => fake()->boolean(90),
+            'name' => $station['name'],
+            'code' => $station['code'],
+            'city' => $station['city'],
+            'state' => 'Bangladesh',
+            'is_active' => true,
         ];
     }
 }

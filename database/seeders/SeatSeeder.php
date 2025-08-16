@@ -2,44 +2,53 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Seat;
-use App\Models\Train;
+use Illuminate\Support\Facades\DB;
 
 class SeatSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $trains = Train::all();
-        $today = now()->toDateString();
-        
-        // Generate seats for next 30 days
-        $dates = [];
-        for ($i = 0; $i < 30; $i++) {
-            $dates[] = now()->addDays($i)->toDateString();
-        }
+    
+        DB::table('seats')->insert([
+            ['coach_id' => 1, 'seat_number' => 'A1', 'row_number' => 1, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A2', 'row_number' => 1, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A3', 'row_number' => 2, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A4', 'row_number' => 2, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A5', 'row_number' => 3, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A6', 'row_number' => 3, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A7', 'row_number' => 4, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A8', 'row_number' => 4, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A9', 'row_number' => 5, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 1, 'seat_number' => 'A10', 'row_number' => 5, 'position' => 'aisle', 'is_available' => true],
+        ]);
 
-        foreach ($trains as $train) {
-            foreach ($dates as $date) {
-                // Generate standard seat layout: A1-A4, B1-B4, C1-C4, D1-D4 (16 seats total)
-                $seatLayout = Seat::generateSeatLayout();
-                
-                foreach ($seatLayout as $seatNumber) {
-                    // Randomly book some seats to simulate real scenario
-                    $status = (mt_rand(1, 100) <= 20) ? 'booked' : 'available'; // 20% booked
-                    
-                    Seat::create([
-                        'train_id' => $train->id,
-                        'seat_number' => $seatNumber,
-                        'journey_date' => $date,
-                        'status' => $status,
-                    ]);
-                }
-            }
-        }
+        
+        DB::table('seats')->insert([
+            ['coach_id' => 2, 'seat_number' => 'B1', 'row_number' => 1, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B2', 'row_number' => 1, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B3', 'row_number' => 2, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B4', 'row_number' => 2, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B5', 'row_number' => 3, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B6', 'row_number' => 3, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B7', 'row_number' => 4, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B8', 'row_number' => 4, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B9', 'row_number' => 5, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 2, 'seat_number' => 'B10', 'row_number' => 5, 'position' => 'aisle', 'is_available' => true],
+        ]);
+
+        
+        DB::table('seats')->insert([
+            ['coach_id' => 3, 'seat_number' => 'C1', 'row_number' => 1, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C2', 'row_number' => 1, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C3', 'row_number' => 2, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C4', 'row_number' => 2, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C5', 'row_number' => 3, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C6', 'row_number' => 3, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C7', 'row_number' => 4, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C8', 'row_number' => 4, 'position' => 'aisle', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C9', 'row_number' => 5, 'position' => 'window', 'is_available' => true],
+            ['coach_id' => 3, 'seat_number' => 'C10', 'row_number' => 5, 'position' => 'aisle', 'is_available' => true],
+        ]);
     }
 }
