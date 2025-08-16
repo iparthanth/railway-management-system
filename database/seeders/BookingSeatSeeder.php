@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\BookingSeat;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class BookingSeatSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('booking_seats')->insert([
+        $bookingSeats = [
             [
                 'booking_id' => 1,
                 'seat_id' => 1,
@@ -37,7 +37,10 @@ class BookingSeatSeeder extends Seeder
                 'passenger_name' => 'Rashida Begum',
                 'passenger_age' => 45,
                 'passenger_gender' => 'female',
-            ],
-        ]);
+            ],
+        ];
+        foreach ($bookingSeats as $bookingSeat) {
+            BookingSeat::create($bookingSeat);
+        }
     }
 }
