@@ -8,15 +8,12 @@ class CreateTrainsTable extends Migration
 {
     public function up(): void
     {
-        Schema::create('trains', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('number')->unique();
-            $table->enum('type', ['express', 'mail', 'local', 'intercity']);
-            $table->json('available_classes');
-            $table->json('running_days'); // ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-            $table->integer('total_coaches');
-            $table->boolean('is_active')->default(true);
+    Schema::create('trains', function (Blueprint $table) {
+ $table->id();
+ $table->string('name');
+    $table->string('number')->unique();
+    $table->enum('type', ['express', 'local', 'intercity', 'mail']);
+        $table->integer('total_coaches');
             $table->timestamps();
         });
     }
