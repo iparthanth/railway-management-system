@@ -24,20 +24,7 @@ class BookingSeatSeeder extends Seeder
                 'passenger_age' => 32,
                 'passenger_gender' => 'female',
             ],
-            [
-                'booking_id' => 2,
-                'seat_id' => 25,
-                'passenger_name' => 'Fatima Rahman',
-                'passenger_age' => 28,
-                'passenger_gender' => 'female',
-            ],
-            [
-                'booking_id' => 4,
-                'seat_id' => 3,
-                'passenger_name' => 'Rashida Begum',
-                'passenger_age' => 45,
-                'passenger_gender' => 'female',
-            ],
+           
         ]);
     }
 }
