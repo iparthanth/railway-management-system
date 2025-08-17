@@ -71,7 +71,7 @@
             @endforeach
         @else
             <div class="card" style="text-align: center;">
-                <h3>😔 No Trains Found</h3>
+                <h3>No Trains Found</h3>
                 <p>No trains available for this route.</p>
                 <a href="{{ route('home') }}" class="btn">← Back to Search</a>
             </div>

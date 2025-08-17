@@ -10,7 +10,7 @@ class CreateCoachesTable extends Migration
  {
  Schema::create('coaches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('train_id')->constrained()->onDelete('cascade');
+            $table->foreignId('train_id')->constrained('trains')->onDelete('cascade');
             $table->string('coach_number');
             $table->enum('coach_type', ['economy', 'business', 'first_class', 'sleeper']);
             $table->integer('total_seats');
