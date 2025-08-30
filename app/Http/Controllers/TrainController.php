@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TrainController extends Controller
 {
@@ -63,13 +64,89 @@ class TrainController extends Controller
         if (!$train) {
             abort(404, 'Train not found');
         }
-        
+
+        // Base seat list for a single coach (4x4)
+        $allSeats = ['A1','A2','A3','A4','B1','B2','B3','B4','C1','C2','C3','C4','D1','D2','D3','D4'];
+
+        // Determine start (rolling forward) and selected dates
+        $today = Carbon::today();
+        $requestedStart = request('journey_date') ? Carbon::parse(request('journey_date')) : $today;
+        // Do not show past dates: pick the later of today or requested start
+        $startDate = $requestedStart->lt($today) ? $today : $requestedStart;
+
+        // Selected date comes from query, default to startDate
+        $selectedDate = request('date');
+        if (!$selectedDate) { $selectedDate = $startDate->toDateString(); }
+        $selected = Carbon::parse($selectedDate);
+
+        // Build a 7-day rolling window starting at startDate
+        $week = [];
+        for ($i = 0; $i < 7; $i++) {
+            $date = $startDate->copy()->addDays($i);
+            $bookedForDay = $this->generateBookedSeatsForDate($date, $allSeats, $train['number']);
+            $week[] = [
+                'date' => $date->toDateString(),
+                'label' => $date->format('D d M'),
+                'booked_count' => count($bookedForDay),
+                'is_full' => count($bookedForDay) === count($allSeats),
+                'available' => count($allSeats) - count($bookedForDay),
+            ];
+        }
+
+        // Clamp selectedDate to the rolling window
+        if ($selected->lt($startDate) || $selected->gt($startDate->copy()->addDays(6))) {
+            $selected = $startDate->copy();
+            $selectedDate = $selected->toDateString();
+        }
+
+        $bookedSeats = $this->generateBookedSeatsForDate($selected, $allSeats, $train['number']);
+        $isFullyBooked = count($bookedSeats) === count($allSeats);
+
         $trainData = array_merge($train, [
-            'total_seats' => 16,
-            'available_seats' => 14,
-            'journey_date' => request('journey_date', now()->format('Y-m-d'))
+            'total_seats' => count($allSeats),
+            'available_seats' => count($allSeats) - count($bookedSeats),
+            'journey_date' => $startDate->toDateString(),
         ]);
 
-        return view('trains.seats', ['train' => $trainData]);
+        return view('trains.seats', [
+            'train' => $trainData,
+            'week' => $week,
+            'selectedDate' => $selectedDate,
+            'bookedSeats' => $bookedSeats,
+            'isFullyBooked' => $isFullyBooked,
+        ]);
+    }
+
+    /**
+     * Simple demo: choose booked seats by weekday so it's easy to read and grade.
+     * Wed is fully booked. Other days vary between light/medium/high.
+     */
+    private function generateBookedSeatsForDate(Carbon $date, array $allSeats, string $trainNumber): array
+    {
+        $day = (int) $date->dayOfWeekIso; // 1=Mon ... 7=Sun
+
+        // Predefined simple sets to keep the code understandable.
+        $light = ['A1','B3','C1'];
+        $medium = ['A1','A2','B2','C3','D1','D3'];
+        $high = ['A1','A2','A3','B1','B2','C2','C3','D2','D3','B4','C1','A4','D1'];
+        $almostFull = ['A1','A2','A3','A4','B1','B2','B3','C1','C2','C3','D1','D2','D3','B4','C4']; // 1 left
+
+        switch ($day) {
+            case 3: // Wed - fully booked
+                return $allSeats;
+            case 1: // Mon - light
+                return $light;
+            case 2: // Tue - medium
+                return $medium;
+            case 4: // Thu - medium/high
+                return $high;
+            case 5: // Fri - almost full
+                return $almostFull;
+            case 6: // Sat - light
+                return $light;
+            case 7: // Sun - medium
+            default:
+                return $medium;
+        }
     }
 }

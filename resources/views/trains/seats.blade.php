@@ -29,6 +29,15 @@
         .selected { background-color: #007bff; }
         .booked { background-color: #dc3545; }
         
+        .date-strip { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
+        .date-pill {
+            padding: 8px 12px; border-radius: 20px; background: #f0f0f0; cursor: pointer;
+            text-decoration: none; color: #333; border: 1px solid #e0e0e0;
+        }
+        .date-pill.active { background: #28a745; color: white; border-color: #28a745; }
+        .date-pill.full { background: #dc3545; color: white; border-color: #dc3545; }
+        .date-meta { font-size: 12px; color: #666; margin-top: 6px; }
+
         .coach-section { margin-bottom: 30px; }
         .coach-title { background: #f8f9fa; padding: 10px; text-align: center; font-weight: bold; border-radius: 5px; margin-bottom: 15px; }
         .seat-grid { max-width: 300px; margin: 0 auto; }
@@ -84,6 +93,26 @@
         </div>
 
         <div class="card">
+            <h3>Choose Date (7 days)</h3>
+            <div class="date-strip">
+                @foreach($week as $day)
+                    @php
+                        $active = $day['date'] === $selectedDate;
+                        $classes = 'date-pill' . ($active ? ' active' : '') . ($day['is_full'] ? ' full' : '');
+                    @endphp
+                    <a class="{{ $classes }}" href="{{ route('trains.seats', ['id' => $train['id'], 'journey_date' => $train['journey_date'], 'date' => $day['date']]) }}">{{ $day['label'] }}</a>
+                @endforeach
+            </div>
+            <div class="date-meta">
+                @php $current = collect($week)->firstWhere('date', $selectedDate); @endphp
+                @if($current)
+                    <span><strong>{{ $current['available'] }}</strong> available • <strong>{{ $current['booked_count'] }}</strong> booked</span>
+                    @if($current['is_full']) <span style="color:#dc3545; font-weight:bold;"> — Fully Booked</span> @endif
+                @endif
+            </div>
+        </div>
+
+        <div class="card">
             <h3>Seat Legend</h3>
             <div class="seat-legend">
                 <div class="legend-item">
@@ -104,93 +133,33 @@
         <div class="card">
             <form action="#" method="POST">
                 @csrf
+                <input type="hidden" name="date" value="{{ $selectedDate }}">
                 <div class="coach-section">
                     <div class="coach-title">🎫 Coach A - Economy Class</div>
                     <div class="seat-grid">
-                        <div class="seat-row">
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="A1" class="seat-checkbox">
-                                <div class="seat">A1</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="A2" class="seat-checkbox">
-                                <div class="seat">A2</div>
-                            </label>
-                            <div class="aisle"></div>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="A3" class="seat-checkbox">
-                                <div class="seat">A3</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="A4" class="seat-checkbox">
-                                <div class="seat">A4</div>
-                            </label>
-                        </div>
-                        
-                        <div class="seat-row">
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="B1" class="seat-checkbox">
-                                <div class="seat">B1</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="B2" class="seat-checkbox">
-                                <div class="seat booked">B2</div>
-                            </label>
-                            <div class="aisle"></div>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="B3" class="seat-checkbox">
-                                <div class="seat">B3</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="B4" class="seat-checkbox">
-                                <div class="seat">B4</div>
-                            </label>
-                        </div>
-                        
-                        <div class="seat-row">
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="C1" class="seat-checkbox">
-                                <div class="seat">C1</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="C2" class="seat-checkbox">
-                                <div class="seat">C2</div>
-                            </label>
-                            <div class="aisle"></div>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="C3" class="seat-checkbox">
-                                <div class="seat booked">C3</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="C4" class="seat-checkbox">
-                                <div class="seat">C4</div>
-                            </label>
-                        </div>
-                        
-                        <div class="seat-row">
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="D1" class="seat-checkbox">
-                                <div class="seat">D1</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="D2" class="seat-checkbox">
-                                <div class="seat">D2</div>
-                            </label>
-                            <div class="aisle"></div>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="D3" class="seat-checkbox">
-                                <div class="seat">D3</div>
-                            </label>
-                            <label class="seat-label">
-                                <input type="checkbox" name="seats[]" value="D4" class="seat-checkbox">
-                                <div class="seat">D4</div>
-                            </label>
-                        </div>
+                        @php
+                            $seats = ['A1','A2','A3','A4','B1','B2','B3','B4','C1','C2','C3','C4','D1','D2','D3','D4'];
+                            $rows = array_chunk($seats, 4);
+                        @endphp
+                        @foreach($rows as $i => $row)
+                            <div class="seat-row">
+                                @foreach($row as $idx => $seat)
+                                    @if($idx === 2)
+                                        <div class="aisle"></div>
+                                    @endif
+                                    <label class="seat-label">
+                                        @php $isBooked = in_array($seat, $bookedSeats); @endphp
+                                        <input type="checkbox" name="seats[]" value="{{ $seat }}" class="seat-checkbox" @if($isBooked) disabled @endif>
+                                        <div class="seat @if($isBooked) booked @endif">{{ $seat }}</div>
+                                    </label>
+                                @endforeach
+                            </div>
+                        @endforeach
                     </div>
                 </div>
                 
                 <div style="text-align: center; margin-top: 30px;">
-                    <button type="submit" class="btn">Confirm Selection</button>
+                    <button type="submit" class="btn" @if($isFullyBooked) disabled style="opacity:0.6; cursor:not-allowed;" @endif>Confirm Selection</button>
                     <a href="javascript:history.back()" class="btn btn-back" style="margin-left: 15px;">← Back</a>
                 </div>
             </form>

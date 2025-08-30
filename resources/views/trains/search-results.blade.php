@@ -65,7 +65,7 @@
                 
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="price">৳{{ number_format($train['price']) }}</div>
-                    <a href="{{ route('trains.seats', $train['id']) }}" class="btn">Select Seats</a>
+                    <a href="{{ route('trains.seats', ['id' => $train['id'], 'journey_date' => $searchParams['journey_date'], 'passengers' => $searchParams['passengers']]) }}" class="btn">Select Seats</a>
                 </div>
             </div>
             @endforeach
