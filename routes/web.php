@@ -12,7 +12,7 @@ Route::get('/trains', [App\Http\Controllers\TrainController::class, 'index'])->n
 Route::post('/trains/search', [App\Http\Controllers\TrainController::class, 'search'])->name('trains.search');
 Route::get('/trains/{id}/seats', [App\Http\Controllers\TrainController::class, 'seats'])->name('trains.seats');
 
-// Docs PDF
+// Docs PDF (detailed, per-block)
 Route::get('/docs/code-explanation.pdf', [App\Http\Controllers\DocController::class, 'reportPdf'])->name('docs.reportPdf');
 
 // Payment Routes
