@@ -11,6 +11,8 @@ Route::get('/', function () {
 Route::get('/trains', [App\Http\Controllers\TrainController::class, 'index'])->name('trains.index');
 Route::post('/trains/search', [App\Http\Controllers\TrainController::class, 'search'])->name('trains.search');
 Route::get('/trains/{id}/seats', [App\Http\Controllers\TrainController::class, 'seats'])->name('trains.seats');
+Route::post('/trains/{id}/passengers', [App\Http\Controllers\TrainController::class, 'passengerForm'])->name('trains.passengers');
+Route::post('/trains/{id}/book', [App\Http\Controllers\TrainController::class, 'storeBooking'])->name('trains.book');
 
 // Docs PDF (detailed, per-block)
 Route::get('/docs/code-explanation.pdf', [App\Http\Controllers\DocController::class, 'reportPdf'])->name('docs.reportPdf');

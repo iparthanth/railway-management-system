@@ -7,7 +7,16 @@
     <style>
         /* Simple styles to keep things readable */
         * { box-sizing: border-box; }
-        body { font-family: Arial, sans-serif;background: url('{{ asset('images/train-bg.jpg') }}') no-repeat center center fixed; margin: 0; background: #f0f4f0; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f4f0; /* fallback color */
+            background-image: url('{{ asset('images/train-bg.jpg') }}');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+        }
         .navbar { background: #fff; border-bottom: 1px solid #ddd; padding: 12px 20px; display:flex; justify-content:space-between; align-items:center; }
         .navbar a { text-decoration: none; color: #000; margin-left: 14px; }
         .brand { color:#28a745; font-weight:700; }

@@ -84,9 +84,13 @@
         </div>
 
         <div class="card">
-            <form method="POST" action="#">
+            <form id="seatForm" method="POST" action="{{ route('trains.passengers', ['id' => $train['id']]) }}">
                 @csrf
                 <input type="hidden" name="date" value="{{ $selectedDate }}">
+                <input type="hidden" name="passengers" value="{{ request('passengers', 1) }}">
+                @if(request('route_id'))
+                    <input type="hidden" name="route_id" value="{{ request('route_id') }}">
+                @endif
 
                 <div style="text-align:center; font-weight:700; margin-bottom:10px;">Coach A - Economy Class</div>
                 <div class="grid">
@@ -118,5 +122,22 @@
             </form>
         </div>
     </div>
+
+    <script>
+        // Ensure at least one seat selected before proceeding
+        (function() {
+            var form = document.getElementById('seatForm');
+            if (!form) return;
+            form.addEventListener('submit', function(e) {
+                var boxes = document.querySelectorAll('.seat-checkbox:not([disabled])');
+                var anyChecked = false;
+                for (var i = 0; i < boxes.length; i++) { if (boxes[i].checked) { anyChecked = true; break; } }
+                if (!anyChecked) {
+                    e.preventDefault();
+                    alert('Please select at least one seat.');
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

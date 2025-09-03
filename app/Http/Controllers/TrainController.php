@@ -213,4 +213,101 @@ class TrainController extends Controller
         if ($day === 6) return $light;            // Sat
         return $medium;                            // Sun
     }
+
+    // Show passenger form after seats selected
+    public function passengerForm($trainId, Request $request)
+    {
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'seats' => 'required|array|min:1',
+            'seats.*' => 'string',
+            'passengers' => 'nullable|integer|min:1|max:4',
+            'route_id' => 'nullable|integer',
+        ]);
+
+        $train = Train::findOrFail((int)$trainId);
+        $route = null;
+        if (!empty($validated['route_id'])) {
+            $route = TrainRoute::with(['fromStation','toStation'])->where('train_id', $train->id)->find($validated['route_id']);
+        }
+
+        // number of passenger rows = number of seats selected (or provided passengers, whichever is smaller)
+        $count = count($validated['seats']);
+        if (!empty($validated['passengers'])) {
+            $count = min($count, (int)$validated['passengers']);
+        }
+
+        return view('trains.passengers', [
+            'train' => $train,
+            'route' => $route,
+            'journey_date' => Carbon::parse($validated['date'])->toDateString(),
+            'selected_seats' => $validated['seats'],
+            'passenger_count' => $count,
+        ]);
+    }
+
+    // Store booking with passenger info and total into DB
+    public function storeBooking($trainId, Request $request)
+    {
+        $data = $request->validate([
+            'journey_date' => 'required|date',
+            'route_id' => 'nullable|integer',
+            'seats' => 'required|array|min:1',
+            'seats.*' => 'string',
+            'passengers' => 'required|array|min:1',
+            'passengers.*.name' => 'required|string',
+            'passengers.*.type' => 'required|in:adult,child',
+        ]);
+
+        $train = Train::findOrFail((int)$trainId);
+        $route = null;
+        if (!empty($data['route_id'])) {
+            $route = TrainRoute::where('train_id', $train->id)->find($data['route_id']);
+        } else {
+            $route = TrainRoute::where('train_id', $train->id)->where('is_active', true)->first();
+        }
+
+        // Pricing
+        $base = $route ? (float)$route->base_price : 0.0;
+        $total = 0.0;
+        foreach ($data['passengers'] as $p) {
+            $total += $p['type'] === 'child' ? ($base * 0.5) : $base;
+        }
+
+        // Create booking
+        $booking = \App\Models\Booking::create([
+            'booking_reference' => 'BR-' . strtoupper(str()->random(6)),
+            'train_id' => $train->id,
+            'route_id' => $route?->id,
+            'coach_id' => null,
+            'journey_date' => Carbon::parse($data['journey_date'])->toDateString(),
+            'passenger_name' => $data['passengers'][0]['name'], // store primary contact
+            'passenger_email' => null,
+            'passenger_phone' => null,
+            'passenger_count' => count($data['passengers']),
+            'total_amount' => $total,
+            'booking_status' => 'pending',
+            'payment_status' => 'unpaid',
+        ]);
+
+        // Attach booking seats (we don’t have seat IDs from DB here; we only have labels like A1, A2)
+        // If your Seat table maps seat_number to seat IDs, we will attempt to resolve them.
+        $seatModels = \App\Models\Seat::whereIn('seat_number', $data['seats'])->get()->keyBy('seat_number');
+
+        foreach ($data['passengers'] as $i => $p) {
+            $label = $data['seats'][$i] ?? null;
+            $seatId = $label && isset($seatModels[$label]) ? $seatModels[$label]->id : null;
+
+            \App\Models\BookingSeat::create([
+                'booking_id' => $booking->id,
+                'seat_id' => $seatId,
+                'passenger_name' => $p['name'],
+                'passenger_age' => null,
+                'passenger_gender' => null,
+            ]);
+        }
+
+        return redirect()->route('payment.create', ['booking' => $booking->id])
+            ->with('success', 'Booking created. Proceed to payment.');
+    }
 }
