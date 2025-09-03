@@ -14,8 +14,7 @@ Route::get('/trains/{id}/seats', [App\Http\Controllers\TrainController::class, '
 Route::post('/trains/{id}/passengers', [App\Http\Controllers\TrainController::class, 'passengerForm'])->name('trains.passengers');
 Route::post('/trains/{id}/book', [App\Http\Controllers\TrainController::class, 'storeBooking'])->name('trains.book');
 
-// Docs PDF (detailed, per-block)
-Route::get('/docs/code-explanation.pdf', [App\Http\Controllers\DocController::class, 'reportPdf'])->name('docs.reportPdf');
+
 
 // Payment Routes
 Route::prefix('payment')->name('payment.')->group(function () {
