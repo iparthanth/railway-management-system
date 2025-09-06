@@ -74,7 +74,7 @@ class TrainController extends Controller
         $journeyDate = Carbon::parse($data['journey_date'])->toDateString();
 
         $results = [];
-        foreach ($routes as $route) {
+        $appendResult = function ($route) use (&$results, $from, $to, $journeyDate) {
             // Price is from route's base_price
             $price = (float) $route->base_price;
 
@@ -105,6 +105,11 @@ class TrainController extends Controller
                 'available_seats' => $available,
                 'route_id' => $route->id,
             ];
+        };
+
+        foreach ($routes as $route) {
+            // Only push the real route (removed the duplicate creation)
+            $appendResult($route);
         }
 
         return view('trains.search-results', [
