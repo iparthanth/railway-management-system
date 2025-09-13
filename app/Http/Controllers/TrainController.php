@@ -189,6 +189,8 @@ class TrainController extends Controller
             'total_seats' => count($allSeats),
             'available_seats' => count($allSeats) - count($bookedSeats),
             'journey_date' => $startDate->toDateString(),
+            'route_id' => $route?->id,
+            'base_price' => $route?->base_price,
         ];
 
         return view('trains.seats', [
@@ -222,6 +224,11 @@ class TrainController extends Controller
     // Show passenger form after seats selected
     public function passengerForm($trainId, Request $request)
     {
+        // If GET, redirect user back to seats selection for this train
+        if ($request->isMethod('get')) {
+            return redirect()->route('trains.seats', ['id' => $trainId]);
+        }
+
         $validated = $request->validate([
             'date' => 'required|date',
             'seats' => 'required|array|min:1',
@@ -234,6 +241,14 @@ class TrainController extends Controller
         $route = null;
         if (!empty($validated['route_id'])) {
             $route = TrainRoute::with(['fromStation','toStation'])->where('train_id', $train->id)->find($validated['route_id']);
+        }
+        // Fallback to first active route if none explicitly provided
+        if (!$route) {
+            $route = TrainRoute::with(['fromStation','toStation'])
+                ->where('train_id', $train->id)
+                ->where('is_active', true)
+                ->orderBy('id')
+                ->first();
         }
 
         // number of passenger rows = number of seats selected (or provided passengers, whichever is smaller)
@@ -259,21 +274,34 @@ class TrainController extends Controller
             'route_id' => 'nullable|integer',
             'seats' => 'required|array|min:1',
             'seats.*' => 'string',
+            'contact_email' => 'required|email|max:255',
+            'contact_phone' => 'required|string|max:20',
             'passengers' => 'required|array|min:1',
             'passengers.*.name' => 'required|string',
             'passengers.*.type' => 'required|in:adult,child',
         ]);
 
         $train = Train::findOrFail((int)$trainId);
+        // Resolve route (must belong to train)
         $route = null;
         if (!empty($data['route_id'])) {
             $route = TrainRoute::where('train_id', $train->id)->find($data['route_id']);
-        } else {
+        }
+        if (!$route) {
             $route = TrainRoute::where('train_id', $train->id)->where('is_active', true)->first();
         }
+        if (!$route) {
+            return back()->withErrors(['error' => 'No active route available for this train.'])->withInput();
+        }
 
-        // Pricing
-        $base = $route ? (float)$route->base_price : 0.0;
+        // Coach is required by DB; take first available coach for the train
+        $coach = Coach::where('train_id', $train->id)->first();
+        if (!$coach) {
+            return back()->withErrors(['error' => 'No coach available for this train.'])->withInput();
+        }
+
+        // Pricing: adult = 100% base, child = 50% base
+        $base = (float)$route->base_price;
         $total = 0.0;
         foreach ($data['passengers'] as $p) {
             $total += $p['type'] === 'child' ? ($base * 0.5) : $base;
@@ -283,21 +311,23 @@ class TrainController extends Controller
         $booking = \App\Models\Booking::create([
             'booking_reference' => 'BR-' . strtoupper(str()->random(6)),
             'train_id' => $train->id,
-            'route_id' => $route?->id,
-            'coach_id' => null,
+            'route_id' => $route->id,
+            'coach_id' => $coach->id,
             'journey_date' => Carbon::parse($data['journey_date'])->toDateString(),
-            'passenger_name' => $data['passengers'][0]['name'], // store primary contact
-            'passenger_email' => null,
-            'passenger_phone' => null,
+            'passenger_name' => $data['passengers'][0]['name'], // primary contact name
+            'passenger_email' => $data['contact_email'],
+            'passenger_phone' => $data['contact_phone'],
             'passenger_count' => count($data['passengers']),
             'total_amount' => $total,
             'booking_status' => 'pending',
-            'payment_status' => 'unpaid',
+            'payment_status' => 'pending',
         ]);
 
-        // Attach booking seats (we don’t have seat IDs from DB here; we only have labels like A1, A2)
-        // If your Seat table maps seat_number to seat IDs, we will attempt to resolve them.
-        $seatModels = \App\Models\Seat::whereIn('seat_number', $data['seats'])->get()->keyBy('seat_number');
+        // Attach booking seats by resolving seat_number -> seat_id (within this train's coaches)
+        $seatModels = \App\Models\Seat::where('coach_id', $coach->id)
+            ->whereIn('seat_number', $data['seats'])
+            ->get()
+            ->keyBy('seat_number');
 
         foreach ($data['passengers'] as $i => $p) {
             $label = $data['seats'][$i] ?? null;
@@ -305,7 +335,7 @@ class TrainController extends Controller
 
             \App\Models\BookingSeat::create([
                 'booking_id' => $booking->id,
-                'seat_id' => $seatId,
+                'seat_id' => $seatId, // can be null if label not found in this coach
                 'passenger_name' => $p['name'],
                 'passenger_age' => null,
                 'passenger_gender' => null,

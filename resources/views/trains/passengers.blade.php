@@ -34,6 +34,12 @@
             @endif
             <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($journey_date)->format('l, F j, Y') }}</p>
             <p><strong>Seats:</strong> {{ implode(', ', $selected_seats) }}</p>
+            @if($route)
+                <p><strong>Price per ticket:</strong> USD {{ number_format($route->base_price, 2) }}</p>
+                <p><strong>Total:</strong> USD <span id="totalAmount">{{ number_format($route->base_price * count($selected_seats), 2) }}</span></p>
+            @else
+                <p style="color:#dc3545;"><strong>Price:</strong> Unavailable for this selection</p>
+            @endif
         </div>
 
         <div class="card">
@@ -45,6 +51,17 @@
                     <input type="hidden" name="seats[]" value="{{ $s }}">
                 @endforeach
 
+                <div class="row">
+                    <div style="flex:1;">
+                        <label>Contact Email</label>
+                        <input type="text" name="contact_email" required placeholder="name@example.com">
+                    </div>
+                    <div style="flex:1;">
+                        <label>Contact Phone</label>
+                        <input type="text" name="contact_phone" required placeholder="e.g. +1 555 123 4567">
+                    </div>
+                </div>
+
                 @for($i = 0; $i < count($selected_seats); $i++)
                     <div class="row">
                         <div style="flex:2;">
@@ -53,7 +70,7 @@
                         </div>
                         <div style="flex:1;">
                             <label>Type</label>
-                            <select name="passengers[{{ $i }}][type]" required>
+                            <select class="ptype" name="passengers[{{ $i }}][type]" required>
                                 <option value="adult">Adult</option>
                                 <option value="child">Child</option>
                             </select>
@@ -61,11 +78,39 @@
                     </div>
                 @endfor
 
+                @if($route)
+                    <div style="text-align:right; margin-top:8px; color:#333;">
+                        <small>Child = 50% of base price</small>
+                    </div>
+                @endif
+
                 <div style="text-align:right;">
-                    <button class="btn" type="submit">Save Booking</button>
+                    <button class="btn" type="submit">Confirm Booking</button>
                 </div>
             </form>
         </div>
     </div>
+    @if($route)
+    <script>
+        // Live total calculation: adult = 1x, child = 0.5x of base
+        (function(){
+            var base = {{ (float)($route->base_price ?? 0) }};
+            function recalc(){
+                var selects = document.querySelectorAll('select.ptype');
+                var total = 0;
+                for (var i = 0; i < selects.length; i++) {
+                    total += (selects[i].value === 'child') ? base * 0.5 : base;
+                }
+                var el = document.getElementById('totalAmount');
+                if (el) el.textContent = total.toFixed(2);
+            }
+            document.addEventListener('change', function(e){
+                if (e.target && e.target.matches('select.ptype')) recalc();
+            });
+            // Initial calc in case server-side count changed
+            recalc();
+        })();
+    </script>
+    @endif
 </body>
 </html>

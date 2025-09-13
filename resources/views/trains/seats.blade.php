@@ -88,8 +88,12 @@
                 @csrf
                 <input type="hidden" name="date" value="{{ $selectedDate }}">
                 <input type="hidden" name="passengers" value="{{ request('passengers', 1) }}">
-                @if(request('route_id'))
-                    <input type="hidden" name="route_id" value="{{ request('route_id') }}">
+                @php $rid = request('route_id'); @endphp
+                @if($rid)
+                    <input type="hidden" name="route_id" value="{{ $rid }}">
+                @else
+                    {{-- ensure route_id is always forwarded to passenger form when seats page was loaded without explicit route_id --}}
+                    <input type="hidden" name="route_id" value="{{ request('route_id', request()->query('route_id')) }}">
                 @endif
 
                 <div style="text-align:center; font-weight:700; margin-bottom:10px;">Coach A - Economy Class</div>
@@ -118,6 +122,9 @@
                 <div style="text-align:center; margin-top:16px;">
                     <button type="submit" class="btn" @if($isFullyBooked) disabled style="opacity:0.6; cursor:not-allowed;" @endif>Confirm Selection</button>
                     <a class="btn back" href="javascript:history.back()" style="margin-left:12px;">← Back</a>
+                    @if(!request('route_id') && !empty($train['route_id']))
+                        <input type="hidden" name="route_id" value="{{ $train['route_id'] }}">
+                    @endif
                 </div>
             </form>
         </div>
