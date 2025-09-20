@@ -31,3 +31,15 @@ Route::prefix('payment')->name('payment.')->group(function () {
     Route::post('/webhook/stripe', [App\Http\Controllers\PaymentController::class, 'stripeWebhook'])->name('webhook.stripe');
 });
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -2,9 +2,13 @@
   "name": "railway-management-system-1",
   "version": "1.0.0",
   "description": "",
+  "private": true,
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",
@@ -16,5 +20,13 @@
   "bugs": {
     "url": "https://github.com/iparthanth/railway-management-system/issues"
   },
-  "homepage": "https://github.com/iparthanth/railway-management-system#readme"
+  "homepage": "https://github.com/iparthanth/railway-management-system#readme",
+  "devDependencies": {
+    "@popperjs/core": "^2.11.6",
+    "axios": "^1.7.0",
+    "bootstrap": "^5.2.3",
+    "laravel-vite-plugin": "^1.0.0",
+    "sass": "^1.56.1",
+    "vite": "^5.0.0"
+  }
 }
