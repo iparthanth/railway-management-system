@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentSuccessMail;
 
 class PaymentController extends Controller
 {
@@ -82,6 +84,15 @@ class PaymentController extends Controller
                 $booking->booking_status = 'confirmed';
                 $booking->payment_status = 'paid';
                 $booking->save();
+
+                // Send confirmation email immediately after successful payment
+                if ($booking->passenger_email) {
+                    try {
+                        Mail::to($booking->passenger_email)->send(new PaymentSuccessMail($booking));
+                    } catch (\Throwable $mailEx) {
+                        Log::warning('Payment email failed', ['error' => $mailEx->getMessage()]);
+                    }
+                }
             }
 
             return view('payment.success', [
@@ -137,6 +148,15 @@ class PaymentController extends Controller
                     $booking->booking_status = 'confirmed';
                     $booking->payment_status = 'paid';
                     $booking->save();
+
+                    // Send email from webhook as well (handles async capture/currency holds)
+                    if ($booking->passenger_email) {
+                        try {
+                            \Mail::to($booking->passenger_email)->send(new \App\Mail\PaymentSuccessMail($booking));
+                        } catch (\Throwable $mailEx) {
+                            \Log::warning('Payment email (webhook) failed', ['error' => $mailEx->getMessage()]);
+                        }
+                    }
                 }
             }
         }
