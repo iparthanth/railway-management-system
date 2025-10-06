@@ -8,6 +8,9 @@
         body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; }
         .navbar { background:#fff; border-bottom:1px solid #ddd; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; }
         .navbar a { color:#000; text-decoration:none; margin-left:14px; }
+        .navbar .links { display:inline-flex; align-items:center; }
+        .navbar .links form { display:inline; margin:0; }
+        .navbar .links button { background:none; border:none; color:#000; margin-left:14px; cursor:pointer; padding:0; font: inherit; }
         .brand { color:#28a745; font-weight:700; }
         .container { max-width: 1000px; margin: 20px auto; padding: 0 16px; }
         .card { background:#fff; border:1px solid #ddd; border-radius:6px; padding:14px; margin-bottom:12px; }
@@ -22,9 +25,17 @@
 <body>
     <div class="navbar">
         <a href="{{ route('home') }}" class="brand">Railway Management System</a>
-        <div>
+        <div class="links">
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('trains.index') }}">All Trains</a>
+            @auth
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit">Logout</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}">Login</a>
+            @endauth
         </div>
     </div>
 
