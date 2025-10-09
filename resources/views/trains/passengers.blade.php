@@ -69,7 +69,7 @@
                     </div>
                     <div style="flex:1;">
                         <label>Contact Phone</label>
-                        <input type="text" name="contact_phone" required placeholder="e.g. +1 555 123 4567">
+                        <input type="text" name="contact_phone" required placeholder="e.g. +880 123555 1231">
                     </div>
                 </div>
 
