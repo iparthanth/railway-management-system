@@ -8,7 +8,7 @@
       <li>Journey date: {{ optional($booking->journey_date)->format('Y-m-d') }}</li>
       <li>Total paid: {{ number_format((float)$booking->total_amount, 2) }}</li>
       @if($booking->train) <li>Train: {{ $booking->train->name ?? $booking->train->id }}</li> @endif
-      @if($booking->route) <li>Route: {{ $booking->route->from ?? '' }} → {{ $booking->route->to ?? '' }}</li> @endif
+      @if($booking->route) <li>Route: {{ optional($booking->route->fromStation)->name }} → {{ optional($booking->route->toStation)->name }}</li> @endif
     </ul>
     <p>Thank you for booking with us.</p>
   </body>

@@ -4,105 +4,72 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Station;
+use App\Models\Train;
 
 class RouteSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ensure key express routes exist and provide two express options per pair
-        $routes = [
-            // Dhaka (1) → Chittagong (2)
-            [
-                'train_id' => 1, // Suborno Express
-                'from_station_id' => 1,
-                'to_station_id' => 2,
-                'departure_time' => '07:30:00',
-                'arrival_time' => '13:00:00',
-                'distance_km' => 264,
-                'duration_minutes' => 330,
-                'base_price' => 500,
-                'is_active' => true,
-            ],
-            [
-                'train_id' => 5, // Karnaphuli Express (second express option on the same pair)
-                'from_station_id' => 1,
-                'to_station_id' => 2,
-                'departure_time' => '15:00:00',
-                'arrival_time' => '20:30:00',
-                'distance_km' => 264,
-                'duration_minutes' => 330,
-                'base_price' => 520,
-                'is_active' => true,
-            ],
+        // Goal: For every From -> To pair, seed TWO active express routes
+        // so search never shows "No Trains Found" due to missing routes.
 
-            // Dhaka (1) → Sylhet (3)
-            [
-                'train_id' => 2, // Padma Express
-                'from_station_id' => 1,
-                'to_station_id' => 3,
-                'departure_time' => '08:00:00',
-                'arrival_time' => '12:15:00',
-                'distance_km' => 198,
-                'duration_minutes' => 255,
-                'base_price' => 400,
-                'is_active' => true,
-            ],
-            [
-                'train_id' => 6, // Surma Express (second express option on the same pair)
-                'from_station_id' => 1,
-                'to_station_id' => 3,
-                'departure_time' => '16:30:00',
-                'arrival_time' => '21:00:00',
-                'distance_km' => 198,
-                'duration_minutes' => 270,
-                'base_price' => 420,
-                'is_active' => true,
-            ],
+        $stations = Station::orderBy('id')->get(['id', 'name']);
+        if ($stations->count() < 2) {
+            // Not enough stations to build routes
+            return;
+        }
 
-            // Dhaka (1) → Rajshahi (4)
-            [
-                'train_id' => 3, // Meghna Express
-                'from_station_id' => 1,
-                'to_station_id' => 4,
-                'departure_time' => '09:00:00',
-                'arrival_time' => '14:00:00',
-                'distance_km' => 256,
-                'duration_minutes' => 300,
-                'base_price' => 450,
-                'is_active' => true,
-            ],
-            [
-                'train_id' => 4, // Jamuna Express (second express option on the same pair)
-                'from_station_id' => 1,
-                'to_station_id' => 4,
-                'departure_time' => '18:30:00',
-                'arrival_time' => '23:20:00',
-                'distance_km' => 256,
-                'duration_minutes' => 290,
-                'base_price' => 460,
-                'is_active' => true,
-            ],
-        ];
+        // Prefer express trains; if fewer than 2, fall back to all trains
+        $expressIds = Train::where('type', 'express')->pluck('id')->all();
+        if (count($expressIds) < 2) {
+            $expressIds = Train::pluck('id')->all();
+        }
+        if (count($expressIds) < 2) {
+            // Still not enough trains to create two options per pair
+            return;
+        }
 
-        foreach ($routes as $r) {
-            // Avoid duplicates if seeder runs multiple times
-            DB::table('routes')->updateOrInsert(
-                [
-                    'train_id' => $r['train_id'],
-                    'from_station_id' => $r['from_station_id'],
-                    'to_station_id' => $r['to_station_id'],
-                    'departure_time' => $r['departure_time'],
-                ],
-                [
-                    'arrival_time' => $r['arrival_time'],
-                    'distance_km' => $r['distance_km'],
-                    'duration_minutes' => $r['duration_minutes'],
-                    'base_price' => $r['base_price'],
-                    'is_active' => $r['is_active'],
-                    'updated_at' => now(),
-                    'created_at' => now(),
-                ]
-            );
+        // Use two time slots for consistency; rotate trains for variety
+        $timeSlots = ['07:30:00', '15:30:00'];
+
+        $pairIndex = 0;
+        foreach ($stations as $from) {
+            foreach ($stations as $to) {
+                if ($from->id === $to->id) continue;
+
+                // Simple distance/duration/base price model based on station id delta
+                $delta = abs($from->id - $to->id);
+                $distanceKm = 120 + ($delta * 30);                 // 120km .. ~300km
+                $durationMin = 150 + ($delta * 25);                // 2.5h .. ~5h
+                $basePrice  = 350 + ($delta * 30);                 // 350 .. ~530
+
+                // Generate two routes for this pair with different trains and times
+                for ($i = 0; $i < 2; $i++) {
+                    $trainId = $expressIds[($pairIndex + $i) % count($expressIds)];
+                    $depTime = $timeSlots[$i % count($timeSlots)];
+
+                    DB::table('routes')->updateOrInsert(
+                        [
+                            'train_id' => $trainId,
+                            'from_station_id' => $from->id,
+                            'to_station_id' => $to->id,
+                            'departure_time' => $depTime,
+                        ],
+                        [
+                            'arrival_time' => date('H:i:s', strtotime($depTime) + ($durationMin * 60)),
+                            'distance_km' => $distanceKm,
+                            'duration_minutes' => $durationMin,
+                            'base_price' => $basePrice,
+                            'is_active' => true,
+                            'updated_at' => now(),
+                            'created_at' => now(),
+                        ]
+                    );
+                }
+
+                $pairIndex++;
+            }
         }
     }
 }
