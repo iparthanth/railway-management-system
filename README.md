@@ -5,3 +5,4 @@
 ![image alt](https://github.com/iparthanth/railway-management-system/blob/64fad7933a6dd6ea9e1be30fce6e05b0f3fb1dd4/127.0.0.1_8000_trains_seats.png)
 ![image alt](https://github.com/iparthanth/railway-management-system/blob/121203d4ad0f19faa07dcb87a8f0b1db18a01b0c/127.0.0.1_8000_trains_1_passengers.png)
 ![image alt](https://github.com/iparthanth/railway-management-system/blob/c02566fe1ae0c971895c842e6e3ea933f20a1a7f/stripe_payment_gateway.png)
+![image alt](https://github.com/iparthanth/railway-management-system/blob/426c9c40f8548e40ddb060dcf6ef0379b0ccd8f7/127.0.0.1_8000_payment_success.png)
