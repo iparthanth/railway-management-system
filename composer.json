@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-pdo_mysql": "*",
         "dompdf/dompdf": "^3.1",
         "erusev/parsedown": "^1.7",
         "laravel/framework": "^11.0",
