@@ -22,8 +22,8 @@ class RouteSeeder extends Seeder
         $distance = 300.00; // km
         $price = 500.00; // base price
 
-        // Explicitly enumerated routes: two per From→To pair (84 entries)
-        // Time slots are fixed; arrival time derived manually (no generation logic)
+        // Explicitly enumerated routes: two per From→To pair 
+        // Time slots are fixed; arrival time derived manually
         $routes = [
             // DHK → ...
             ['train_number' => '701', 'from_code' => 'DHK', 'to_code' => 'CTG', 'departure_time' => '07:30:00', 'arrival_time' => '11:30:00', 'duration_minutes' => $duration, 'distance_km' => $distance, 'base_price' => $price, 'is_active' => true],

@@ -110,14 +110,15 @@
                 <div style="text-align:center; font-weight:700; margin-bottom:10px;">Coach A - Economy Class</div>
                 <div class="grid">
                     @php
-                        $seats = ['A1','A2','A3','A4','B1','B2','B3','B4','C1','C2','C3','C4','D1','D2','D3','D4'];
-                        $rows = array_chunk($seats, 4);
+                        $seats = ['A1','A2','A3','A4','B1','B2','B3','B4','C1','C2','C3','C4','D1','D2','D3','D4','D6','D4'];
+                        $rows = array_chunk($seats, 6);
+                        
                     @endphp
 
                     @foreach($rows as $row)
                         <div class="row">
                             @foreach($row as $i => $seat)
-                                @if($i === 2)
+                                @if($i === 3)
                                     <div class="aisle">||</div>
                                 @endif
                                 @php $taken = in_array($seat, $bookedSeats); @endphp
