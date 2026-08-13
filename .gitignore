@@ -11,6 +11,9 @@
 !/storage/framework/views/.gitignore
 /storage/framework/testing/*
 !/storage/framework/testing/.gitignore
+/bootstrap/cache/events.php
+/bootstrap/cache/routes-v7.php
+/bootstrap/cache/config.php
 .env
 .env.backup
 .env.production
